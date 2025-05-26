@@ -33,7 +33,9 @@ def manage_books():
     author = request.form.get('author', '').strip()
     if not title or not author:
         return jsonify({'error':'Title and author required'}), 400
-    book_id = str(len(books) + 1)
+    from uuid import uuid4
+book_id = str(uuid4())
+
     cover = ''
     if 'cover' in request.files:
         file = request.files['cover']
