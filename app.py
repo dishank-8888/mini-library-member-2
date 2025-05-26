@@ -26,6 +26,20 @@ def manage_books():
             else:
                 book_copy['cover_url'] = ''
             result.append(book_copy)
-
-            
     return jsonify(result)
+    @app.route('/books', methods=['POST'])
+def manage_books():
+    title = request.form.get('title', '').strip()
+    author = request.form.get('author', '').strip()
+    if not title or not author:
+        return jsonify({'error':'Title and author required'}), 400
+    book_id = str(len(books) + 1)
+    cover = ''
+    if 'cover' in request.files:
+        file = request.files['cover']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(f"{book_id}_{file.filename}")
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            cover = filename
+    books[book_id] = {'id': book_id, 'title': title, 'author': author, 'cover': cover}
+    return jsonify(books[book_id]), 201
