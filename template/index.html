@@ -29,10 +29,12 @@
     }
     fetchBooks();
 }
-}
-    books.forEach(b => {
-        bookList.innerHTML += <li>${b.title}</li>;
-    });
+    }
+   books.forEach(b => {
+    bookList.innerHTML += `<li>${b.title} by ${b.author} ${b.available !== undefined ? (b.available ? '(Available)' : '(Borrowed)') : ''}</li>`;
+});
+
+  
     async function addBook() {
     const title = document.getElementById('bookTitle').value;
     const author = document.getElementById('bookAuthor').value;
@@ -42,5 +44,5 @@
         body: JSON.stringify({title, author})
     });
     fetchBooks();
-}
+}}
 </script>
