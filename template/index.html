@@ -14,12 +14,21 @@
     bookList.innerHTML = '';
     async function addBook() {
     const title = document.getElementById('bookTitle').value;
-    await fetch('/books', {
+   async function addBook() {
+    const title = document.getElementById('bookTitle').value;
+    const author = document.getElementById('bookAuthor').value;
+    const res = await fetch('/books', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({title})
+        body: JSON.stringify({title, author})
     });
+    if (!res.ok) {
+        const error = await res.json();
+        alert(error.error || 'Failed to add book');
+        return;
+    }
     fetchBooks();
+}
 }
     books.forEach(b => {
         bookList.innerHTML += <li>${b.title}</li>;
