@@ -7,14 +7,13 @@ def manage_books():
         matches = query in book['title'].lower() or query in book['author'].lower()
         if not query or matches:
             # Check availability
-            is_borrowed = any(
-                tx for tx in transactions
-                if tx['book_id'] == book['id'] and tx['action']=='borrow' and
-                not any(
-                    t2 for t2 in transactions
-                    if t2['book_id']==book['id'] and t2['action']=='return' and t2['date'] > tx['date']
-                )
-            )
+           # Preprocess transactions once per request
+            book_status = {}
+            for tx in sorted(transactions, key=lambda x: x['date']):
+                if tx['action'] in ('borrow', 'return'):
+                 book_status[tx['book_id']] = (tx['action'] == 'borrow')
+
+            is_borrowed = book_status.get(book['id'], False)
             book_copy = book.copy()
             book_copy['available'] = not is_borrowed
             if avail == 'available' and is_borrowed:
@@ -47,15 +46,19 @@ book_id = str(uuid4())
     return jsonify(books[book_id]), 201
     @app.route('/books', methods=['DELETE'])
 def manage_books():
-    book_id = request.args.get('id')
-    if book_id in books:
-        # Delete cover image
-        cover = books[book_id]['cover']
-        if cover:
-            try:
-                os.remove(os.path.join(UPLOAD_FOLDER, cover))
-            except Exception:
-                pass
+    elif request.method == 'DELETE':
+    if not (book_id := request.args.get('id')):
+        return jsonify({'error': 'Missing book ID'}), 400
+        
+    if book_id not in books:
+        return jsonify({'error': 'Book not found'}), 404
+
+    cover_path = os.path.join(UPLOAD_FOLDER, books[book_id]['cover'])
+    if os.path.exists(cover_path):
+        try:
+            os.remove(cover_path)
+        except OSError as e:
+            app.logger.error(f"Failed to delete cover: {str(e)}")
         del books[book_id]
         # Remove transactions for this book
         for tx in list(transactions):
