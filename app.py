@@ -7,14 +7,13 @@ def manage_books():
         matches = query in book['title'].lower() or query in book['author'].lower()
         if not query or matches:
             # Check availability
-            is_borrowed = any(
-                tx for tx in transactions
-                if tx['book_id'] == book['id'] and tx['action']=='borrow' and
-                not any(
-                    t2 for t2 in transactions
-                    if t2['book_id']==book['id'] and t2['action']=='return' and t2['date'] > tx['date']
-                )
-            )
+           # Preprocess transactions once per request
+            book_status = {}
+            for tx in sorted(transactions, key=lambda x: x['date']):
+                if tx['action'] in ('borrow', 'return'):
+                 book_status[tx['book_id']] = (tx['action'] == 'borrow')
+
+            is_borrowed = book_status.get(book['id'], False)
             book_copy = book.copy()
             book_copy['available'] = not is_borrowed
             if avail == 'available' and is_borrowed:
