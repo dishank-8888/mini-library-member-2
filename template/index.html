@@ -7,42 +7,29 @@
     <ul id="bookList"></ul>
 </div>
 <script>
-    async function fetchBooks() {
-    const res = await fetch('/books');
-    const books = await res.json();
-    const bookList = document.getElementById('bookList');
-    bookList.innerHTML = '';
+    // Define addBook in the global scope
     async function addBook() {
-    const title = document.getElementById('bookTitle').value;
-   async function addBook() {
-    const title = document.getElementById('bookTitle').value;
-    const author = document.getElementById('bookAuthor').value;
-    const res = await fetch('/books', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({title, author})
-    });
-    if (!res.ok) {
-        const error = await res.json();
-        alert(error.error || 'Failed to add book');
-        return;
+        const title = document.getElementById('bookTitle').value;
+        const author = document.getElementById('bookAuthor').value;
+        await fetch('/books', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title, author})
+        });
+        fetchBooks(); // Refresh the book list
     }
-    fetchBooks();
-}
-    }
-   books.forEach(b => {
-    bookList.innerHTML += `<li>${b.title} by ${b.author} ${b.available !== undefined ? (b.available ? '(Available)' : '(Borrowed)') : ''}</li>`;
-});
 
-  
-    async function addBook() {
-    const title = document.getElementById('bookTitle').value;
-    const author = document.getElementById('bookAuthor').value;
-    await fetch('/books', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({title, author})
-    });
+    // Fetch and display the list of books
+    async function fetchBooks() {
+        const res = await fetch('/books');
+        const books = await res.json();
+        const bookList = document.getElementById('bookList');
+        bookList.innerHTML = '';
+        books.forEach(b => {
+            bookList.innerHTML += <li>${b.title} by ${b.author} ${b.available !== undefined ? (b.available ? '(Available)' : '(Borrowed)') : ''}</li>;
+        });
+    }
+
+    // Initial fetch of books when the page loads
     fetchBooks();
-}}
 </script>
