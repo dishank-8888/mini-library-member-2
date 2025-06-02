@@ -1,3 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Library Management System</title>
+   <!-- AFTER -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /* Add this to your existing CSS */
+    @media (max-width: 768px) {
+        .flex { flex-direction: column; gap: 20px; }
+        .panel { min-width: auto; }
+        nav ul { flex-direction: column; align-items: center; gap: 10px; }
+    }
+    /* --- Part 1: Structure and Styling --- */
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #f4f6fa;
+        margin: 0;
+    }
+    h1 {
+        text-align: center;
+        color: #2d3e50;
+        margin-top: 20px;
+    }
+    .container, .login-panel {
+        max-width: 1100px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px #0001;
+    }
+    .flex {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+    .panel {
+        flex: 1 1 350px;
+        min-width: 300px;
+    }
+    button {
+        background: #2d3e50;
+        color: #fff;
+        padding: 7px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    button:hover {
+        background: #1a2533;
+    }
+    .notification {
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+        margin: 10px 0;
+        color: #fff;
+    }
+    .notification.success { background: #4caf50; }
+    .notification.error { background: #e53935; }
+    /* Add to your styles */
+    body { background: #f4f6fa; color: #2d3e50; }
+    button { background: #2d3e50; color: #fff; }
+    .notification.success { background: #4caf50; color: #fff; }
+    .notification.error { background: #e53935; color: #fff; }
+
+</style>
+
+<!-- Inside the flex container (add to the previous flex div) -->
+<div class="panel">Panel 1</div>
+<div class="panel">Panel 2</div>
+<!-- Add more panels as needed -->
+
+</head>
+<body>
+    <!-- AFTER -->
+<nav>
+    <ul style="list-style: none; padding: 0; display: flex; gap: 20px; justify-content: center; background: #2d3e50; color: #fff; padding: 15px 0;">
+        <li><a href="#" style="text-decoration: none; color: #fff;">Home</a></li>
+        <li><a href="#" style="text-decoration: none; color: #fff;">Books</a></li>
+        <li><a href="#" style="text-decoration: none; color: #fff;">My Account</a></li>
+    </ul>
+</nav>
+<!-- AFTER -->
+
+<h1><span role="img" aria-label="Books">📚</span> Mini Library Management System</h1>
+<!-- For images: <img src="book.png" alt="Book icon"> -->
+<!-- (Also check color contrast in CSS) -->
+    <!-- Login Section -->
+<div id="loginSection" class="login-panel">
+    <h2>Login</h2>
+    <input type="text" id="loginName" placeholder="Enter your name">
+    <button onclick="loginUser()" style="width: 100%; margin-top: 10px;">Login to Manage Books</button>
+    <div id="loginNotification" class="notification"></div>
+</div>
+<!-- Main Section -->
+<div class="container" id="mainSection">
+<!-- AFTER -->
+<div id="userWelcome" style="font-size: 1.2em; font-weight: bold; color: #2d3e50; margin-bottom: 20px;"></div>
+<button onclick="logoutUser()" style="float:right; background: #e53935;">Sign Out</button>
+    <div id="mainNotification" class="notification"></div>
+    <div class="flex">
+        <!-- Panels will go here in next commit -->
+    </div>
+</div>
+
+</body>
+</html>
+
 <!-- Book Panel -->
 <div class="panel">
     <h2>Books</h2>
