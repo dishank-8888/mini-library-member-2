@@ -1,4 +1,4 @@
-
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,6 +110,8 @@
 </body>
 </html>
 
+=======
+>>>>>>> 9d07d327ea408c8427a5dc4f36d830de934ece59
 <!-- Book Panel -->
 <div class="panel">
     <h2>Books</h2>
@@ -119,7 +121,7 @@
     <ul id="bookList"></ul>
 </div>
 <script>
-
+<<<<<<< HEAD
     async function fetchBooks() {
     const res = await fetch('/books');
     const books = await res.json();
@@ -157,7 +159,8 @@
         body: JSON.stringify({title, author})
     });
     fetchBooks();
-    }
+}}
+=======
     // Define addBook in the global scope
     async function addBook() {
         const title = document.getElementById('bookTitle').value;
@@ -183,5 +186,5 @@
 
     // Initial fetch of books when the page loads
     fetchBooks();
-
+>>>>>>> 9d07d327ea408c8427a5dc4f36d830de934ece59
 </script>
