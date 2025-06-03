@@ -1,3 +1,61 @@
+
+from flask import Flask, render_template, send_from_directory
+import os
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'
+
+UPLOAD_FOLDER = 'static/covers'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/static/covers/<filename>')
+def cover_image(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+    from flask import request, jsonify, session
+
+users = {}
+books = {}
+transactions = []
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'status':'error', 'message':'Name required'}), 400
+    user = next((u for u in users.values() if u['name'].lower() == name.lower()), None)
+    if not user:
+        user_id = str(len(users) + 1)
+        user = {'id': user_id, 'name': name}
+        users[user_id] = user
+    session['user_id'] = user['id']
+    return jsonify({'status':'success', 'user': user})
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return jsonify({'status':'success'})
+
+@app.route('/session')
+def check_session():
+    user_id = session.get('user_id')
+    if user_id and user_id in users:
+        return jsonify({'logged_in':True, 'user':users[user_id]})
+    return jsonify({'logged_in':False})
+@app.route('/books')
+def list_books():
+    if 'user_id' not in session:
+        return jsonify({'status':'error', 'message':'Login required'}), 401
+    return jsonify({'books': list(books.value
+
 @app.route('/books', methods=['GET'])
 def manage_books():
     query = request.args.get('q', '').lower()
@@ -7,6 +65,15 @@ def manage_books():
         matches = query in book['title'].lower() or query in book['author'].lower()
         if not query or matches:
             # Check availability
+
+            is_borrowed = any(
+                tx for tx in transactions
+                if tx['book_id'] == book['id'] and tx['action']=='borrow' and
+                not any(
+                    t2 for t2 in transactions
+                    if t2['book_id']==book['id'] and t2['action']=='return' and t2['date'] > tx['date']
+                )
+            )
            # Preprocess transactions once per request
             book_status = {}
             for tx in sorted(transactions, key=lambda x: x['date']):
@@ -14,6 +81,7 @@ def manage_books():
                  book_status[tx['book_id']] = (tx['action'] == 'borrow')
 
             is_borrowed = book_status.get(book['id'], False)
+
             book_copy = book.copy()
             book_copy['available'] = not is_borrowed
             if avail == 'available' and is_borrowed:
@@ -46,6 +114,16 @@ book_id = str(uuid4())
     return jsonify(books[book_id]), 201
     @app.route('/books', methods=['DELETE'])
 def manage_books():
+
+    book_id = request.args.get('id')
+    if book_id in books:
+        # Delete cover image
+        cover = books[book_id]['cover']
+        if cover:
+            try:
+                os.remove(os.path.join(UPLOAD_FOLDER, cover))
+            except Exception:
+                pass
     elif request.method == 'DELETE':
     if not (book_id := request.args.get('id')):
         return jsonify({'error': 'Missing book ID'}), 400
@@ -59,6 +137,7 @@ def manage_books():
             os.remove(cover_path)
         except OSError as e:
             app.logger.error(f"Failed to delete cover: {str(e)}")
+
         del books[book_id]
         # Remove transactions for this book
         for tx in list(transactions):
