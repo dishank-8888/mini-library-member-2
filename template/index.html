@@ -1,3 +1,32 @@
+<!-- Borrow/Return Panel -->
+<div class="panel">
+    <h2>Borrow/Return</h2>
+    <button onclick="borrowBook()">Borrow</button>
+    <button onclick="returnBook()">Return</button>
+</div>
+<!-- Transactions Panel -->
+<div class="panel">
+    <h2>Transactions</h2>
+    <div id="transactionList"></div>
+</div>
+<script>
+async function borrowBook() {
+    await fetch('/borrow', {method: 'POST'});
+    fetchTransactions();
+}
+
+async function returnBook() {
+    await fetch('/return', {method: 'POST'});
+    fetchTransactions();
+}
+async function fetchTransactions() {
+    const res = await fetch('/transactions');
+    const txs = await res.json();
+    const transactionList = document.getElementById('transactionList');
+    transactionList.innerHTML = txs.map(tx => `<p>${tx.actaion} - ${tx.date}</p>`).join('');
+}
+
+</script>
 <!-- Book Panel -->
 <div class="panel">
     <h2>Books</h2>
