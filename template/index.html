@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -175,8 +176,19 @@ users.forEach(u => {
 
     });
 }
-
-</script>
+  
+<!-- Borrow/Return Panel -->
+<div class="panel">
+    <h2>Borrow/Return</h2>
+    <button onclick="borrowBook()">Borrow</button>
+    <button onclick="returnBook()">Return</button>
+</div>
+<!-- Transactions Panel -->
+<div class="panel">
+    <h2>Transactions</h2>
+    <div id="transactionList"></div>
+</div>
+  
 
 <!-- Book Panel -->
 <div class="panel">
@@ -187,6 +199,24 @@ users.forEach(u => {
     <ul id="bookList"></ul>
 </div>
 <script>
+async function borrowBook() {
+    await fetch('/borrow', {method: 'POST'});
+    fetchTransactions();
+}
+
+async function returnBook() {
+    await fetch('/return', {method: 'POST'});
+    fetchTransactions();
+}
+async function fetchTransactions() {
+    const res = await fetch('/transactions');
+    const txs = await res.json();
+    const transactionList = document.getElementById('transactionList');
+    transactionList.innerHTML = txs.map(tx => `<p>${tx.actaion} - ${tx.date}</p>`).join('');
+}
+
+
+
 
     async function fetchBooks() {
     const res = await fetch('/books');
