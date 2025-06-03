@@ -1,4 +1,4 @@
-
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,75 +109,9 @@
 
 </body>
 </html>
-<!-- User Panel -->
-<div class="panel">
-    <h2>Users</h2>
-    <input type="text" id="userName" placeholder="Enter user name">
-    <button onclick="addUser()">Add User</button>
-    <ul id="userList"></ul>
-</div>
-<script>
-    // User Authentication
-async function loginUser() {
-    const name = document.getElementById('loginName').value.trim();
-    if (!name) return alert('Enter your name');
-    await fetch('/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name})
-    });
-    checkLogin();
-}
 
-async function logoutUser() {
-    await fetch('/logout', {method: 'POST'});
-    checkLogin();
-}
-
-async function checkLogin() {
-    const response = await fetch('/session');
-    const data = await response.json();
-    if (data.logged_in) {
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('mainSection').style.display = '';
-    } else {
-        document.getElementById('loginSection').style.display = '';
-        document.getElementById('mainSection').style.display = 'none';
-    }
-}
-// User Management
-async function addUser() {
-    const name = document.getElementById('userName').value.trim();
-    if (!name) return alert('Name required');
-    
-
-
-    await fetch('/users', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name})
-    });
-    fetchUsers();
-}
-
-async function fetchUsers() {
-    const res = await fetch('/users');
-    const users = await res.json();
-    const userList = document.getElementById('userList');
-    userList.innerHTML = '';
-    users.forEach(u => {
-        // In fetchUsers():
-users.forEach(u => {
-    const li = document.createElement('li');
-    li.textContent = u.name;  // Safe text injection
-    userList.appendChild(li);
-});
-
-    });
-}
-
-</script>
-
+=======
+>>>>>>> 9d07d327ea408c8427a5dc4f36d830de934ece59
 <!-- Book Panel -->
 <div class="panel">
     <h2>Books</h2>
@@ -187,7 +121,7 @@ users.forEach(u => {
     <ul id="bookList"></ul>
 </div>
 <script>
-
+<<<<<<< HEAD
     async function fetchBooks() {
     const res = await fetch('/books');
     const books = await res.json();
@@ -225,7 +159,8 @@ users.forEach(u => {
         body: JSON.stringify({title, author})
     });
     fetchBooks();
-    }
+}}
+=======
     // Define addBook in the global scope
     async function addBook() {
         const title = document.getElementById('bookTitle').value;
@@ -251,5 +186,5 @@ users.forEach(u => {
 
     // Initial fetch of books when the page loads
     fetchBooks();
-
+>>>>>>> 9d07d327ea408c8427a5dc4f36d830de934ece59
 </script>
